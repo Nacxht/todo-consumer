@@ -2,8 +2,21 @@
 export default defineNuxtConfig({
 	devtools: { enabled: true },
 	runtimeConfig: {
+		apiSecret: "",
+
 		public: {
-			apiBaseUrl: process.env.API_BASE_URL,
+			apiUrl: process.env.API_BASE_URL || "/api",
+		},
+	},
+	routeRules: {
+		"/api/**": {
+			proxy: { to: process.env.API_BASE_URL || "/api" },
+			cors: true,
+			headers: {
+				"access-control-allow-methods": "GET,HEAD,PATCH,POST,DELETE",
+				"access-control-allow-origin": "http://localhost:3000",
+				"access-control-allow-credentials": "true",
+			},
 		},
 	},
 });
