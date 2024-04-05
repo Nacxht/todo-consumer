@@ -15,7 +15,7 @@ export default defineNuxtConfig({
 		apiSecret: "",
 
 		public: {
-			apiUrl: process.env.API_BASE_URL || "/api",
+			apiUrl: process.env.API_BASE_URL || "",
 		},
 	},
 
