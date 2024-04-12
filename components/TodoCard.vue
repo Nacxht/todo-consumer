@@ -6,7 +6,7 @@
 				<input type="checkbox" checked:any="checked" class="checkbox checkbox-sm self-center" />
 
 				<!-- Delete -->
-				<button class="w-6 h-6" onclick="main_modal.showModal()">
+				<button @click="deleteTodo(todoId)" class="w-6 h-6">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 						<path
 							fill="currentColor"
@@ -27,7 +27,34 @@
 </template>
 
 <script setup lang="ts">
-const { title, description } = defineProps(["title", "description"]);
+const config = useRuntimeConfig();
+const jwtCookie = useCookie("jwt");
+const { todoId, title, description } = defineProps(["todoId", "title", "description"]);
+
+const deleteTodoError = ref({
+	name: "",
+	path: "",
+	message: "",
+});
+
+// Delete a todo
+const deleteTodo = async (todoIdParam: string) => {
+	try {
+		const response = await $fetch(`${config.public.apiUrl}/todo/delete`, {
+			method: "DELETE",
+			body: JSON.stringify({
+				todoId: todoIdParam,
+			}),
+			headers: {
+				Authorization: `Bearer ${jwtCookie.value}`,
+			},
+		});
+	} catch (err: any) {
+		deleteTodoError.value = err.response._data.error;
+	} finally {
+		await refreshNuxtData();
+	}
+};
 </script>
 
 <style scoped>
