@@ -19,7 +19,7 @@
 					/>
 				</div>
 
-				<!-- Descripition -->
+				<!-- Description -->
 				<div>
 					<div v-if="addTodoError.path === 'description'" class="mb-2">
 						<p class="text-red-500 text-xs font-thin ml-[0.2rem]">{{ addTodoError.message }}</p>
@@ -41,7 +41,7 @@
 				class="col-span-full lg:col-span-7 border border-gray-600 order-2 lg:order-1 rounded-lg overflow-y-auto mb-1 min-h-[25rem] lg:min-h-full max-h-[25rem] lg:max-h-full p-5 space-y-3"
 			>
 				<!-- Empty -->
-				<div v-if="!todoList?.data" class="flex-row">
+				<div v-if="!todoList?.data.length" class="flex-row">
 					<div class="card w-full h-fit bg-neutral text-neutral-content">
 						<div class="h-full flex p-3">
 							<div class="w-full text-center">
@@ -54,13 +54,13 @@
 
 				<!-- Not Empty -->
 				<div v-else v-for="todo in todoList.data" class="flex-row">
-					<TodoCard :title="todo.title" :description="todo.description ? todo.description : 'No description'" />
+					<TodoCard :todoId="todo._id" :title="todo.title" :description="todo.description ? todo.description : 'No description'" />
 				</div>
 			</div>
 		</div>
 
-		<!-- Modal -->
-		<Modal />
+		<!-- Modal (Coming soon, I'm still lazy to using modal) -->
+		<!-- <Modal /> -->
 	</div>
 </template>
 
@@ -116,15 +116,6 @@ const addTodo = async () => {
 		addTodoError.value = err.response._data.error;
 	} finally {
 		await refreshNuxtData();
-	}
-};
-
-// Delete a todo
-const deleteTodo = async () => {
-	try {
-		//
-	} catch (err) {
-		//
 	}
 };
 
