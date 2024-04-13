@@ -32,8 +32,9 @@
 					></textarea>
 				</div>
 
-				<!-- Submit Button -->
+				<!-- Submit Button & Logout Button -->
 				<button type="submit" :disabled="!canSubmit" class="btn btn-outline btn-primary w-full text-xs">Create a new todo</button>
+				<button type="button" @click.prevent="logout" class="btn btn-outline btn-error w-full text-xs">Logout</button>
 			</form>
 
 			<!-- Todo Lists -->
@@ -84,6 +85,12 @@ const addTodoData = ref({
 	description: "",
 });
 
+// Logout
+const logout = async () => {
+	jwtCookie.value = null;
+	return navigateTo("/login");
+};
+
 // "CreateTodo" error model
 const addTodoError = ref({
 	name: "",
@@ -95,6 +102,15 @@ const addTodoError = ref({
 const { data: todoList, error: todoListError } = await useFetch<TodoList>(`${config.public.apiUrl}/todo`, {
 	headers: {
 		Authorization: `Bearer ${jwtCookie.value}`,
+	},
+	onResponseError: async ({ response }) => {
+		if (response._data.error) {
+			const errName = response._data.error.name;
+			switch (errName) {
+				case "TokenExpiredError":
+					await logout();
+			}
+		}
 	},
 });
 
@@ -114,6 +130,11 @@ const addTodo = async () => {
 		addTodoData.value = { title: "", description: "" }; // Reset form on success
 	} catch (err: any) {
 		addTodoError.value = err.response._data.error;
+
+		switch (addTodoError.value.name) {
+			case "TokenExpiredError":
+				return await logout();
+		}
 	} finally {
 		await refreshNuxtData();
 	}
