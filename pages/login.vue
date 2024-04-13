@@ -92,7 +92,7 @@ const userLogin = async () => {
 			method: "POST",
 			body: userData.value,
 			headers: {
-				"Access-Control-Allow-Origin": "*",
+				"Access-Control-Allow-Origin": `${config.public.apiUrl}`,
 			},
 		});
 
