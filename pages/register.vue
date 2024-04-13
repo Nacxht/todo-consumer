@@ -68,6 +68,12 @@
 </template>
 
 <script setup lang="ts">
+import afterAuth from "~/middleware/afterAuth";
+
+definePageMeta({
+	middleware: afterAuth,
+});
+
 useHead({
 	title: "Register",
 });
