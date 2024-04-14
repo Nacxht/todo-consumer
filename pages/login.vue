@@ -91,9 +91,6 @@ const userLogin = async () => {
 		const response = await $fetch<LoginResponse>(`${config.public.apiUrl}/auth/login`, {
 			method: "POST",
 			body: userData.value,
-			headers: {
-				"Access-Control-Allow-Origin": `${config.public.apiUrl}`,
-			},
 		});
 
 		loginError.value = { name: "", path: "", message: "" }; // Reset error on success
