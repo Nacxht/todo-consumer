@@ -2,7 +2,11 @@
 	<div class="flex h-screen justify-center">
 		<div class="grid grid-cols-12 h-full w-[50rem] p-5 gap-5">
 			<!-- Todo Form -->
-			<form @submit.prevent="addTodo" class="col-span-full lg:col-span-5 border border-gray-600 order-1 lg:order-2 h-fit rounded-lg p-4 space-y-3">
+			<form
+				@submit.prevent="addTodo"
+				@submit="submitDelayers"
+				class="col-span-full lg:col-span-5 border border-gray-600 order-1 lg:order-2 h-fit rounded-lg p-4 space-y-3"
+			>
 				<!-- Title -->
 				<div>
 					<div v-if="addTodoError.path === 'title'" class="mb-2">
@@ -33,7 +37,10 @@
 				</div>
 
 				<!-- Submit Button & Logout Button -->
-				<button type="submit" :disabled="!canSubmit" class="btn btn-outline btn-primary w-full text-xs">Create a new todo</button>
+				<button type="submit" :disabled="isSubmitDelay || todoListPending" class="btn btn-outline btn-primary w-full text-xs">
+					<span v-if="todoListPending" class="invert"><img src="/svg/loading.svg" alt="" /></span>
+					<span v-else>Create a new todo</span>
+				</button>
 				<button type="button" @click.prevent="logout" class="btn btn-outline btn-error w-full text-xs">Logout</button>
 			</form>
 
@@ -41,8 +48,20 @@
 			<div
 				class="col-span-full lg:col-span-7 border border-gray-600 order-2 lg:order-1 rounded-lg overflow-y-auto mb-1 min-h-[25rem] lg:min-h-full max-h-[25rem] lg:max-h-full p-5 space-y-3"
 			>
+				<!-- Loading -->
+				<div v-if="todoListPending" class="flex-row">
+					<div class="card w-full h-fit bg-neutral text-neutral-content">
+						<div class="h-full flex p-3">
+							<div class="w-full text-center">
+								<h2 class="text-base capitalize text-300">Loading...</h2>
+								<p class="text-xs text-gray-400 mt-1 font-light">Wait for a moment!</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				<!-- Empty -->
-				<div v-if="!todoList?.data.length" class="flex-row">
+				<div v-else-if="!todoList?.data.length" class="flex-row">
 					<div class="card w-full h-fit bg-neutral text-neutral-content">
 						<div class="h-full flex p-3">
 							<div class="w-full text-center">
@@ -78,6 +97,7 @@ useHead({
 
 const config = useRuntimeConfig();
 const jwtCookie = useCookie("jwt");
+const isSubmitDelay = ref(false);
 
 // "addTodo" data model
 const addTodoData = ref({
@@ -99,7 +119,11 @@ const addTodoError = ref({
 });
 
 // Get todo data
-const { data: todoList, error: todoListError } = await useFetch<TodoList>(`${config.public.apiUrl}/todo`, {
+const {
+	data: todoList,
+	error: todoListError,
+	pending: todoListPending,
+} = await useFetch<TodoList>(`${config.public.apiUrl}/todo`, {
 	headers: {
 		Authorization: `Bearer ${jwtCookie.value}`,
 	},
@@ -138,6 +162,14 @@ const addTodo = async () => {
 	} finally {
 		await refreshNuxtData();
 	}
+};
+
+// Delaying submit button
+const submitDelayers = async () => {
+	isSubmitDelay.value = true;
+	setTimeout(() => {
+		isSubmitDelay.value = false;
+	}, 700);
 };
 
 const canSubmit = computed(() => {
