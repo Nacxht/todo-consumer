@@ -74,7 +74,7 @@
 
 				<!-- Not Empty -->
 				<div v-else v-for="todo in todoList.data" class="flex-row">
-					<TodoCard :todoId="todo._id" :title="todo.title" :description="todo.description ? todo.description : 'No description'" />
+					<TodoCard :todoData="todo" />
 				</div>
 			</div>
 		</div>
