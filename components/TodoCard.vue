@@ -3,10 +3,16 @@
 		<div class="h-full flex p-3">
 			<div class="flex flex-col justify-center items-center gap-4">
 				<!-- Is Complete -->
-				<input type="checkbox" :checked="Boolean(todoData.isComplete)" class="checkbox checkbox-sm self-center" />
+				<input
+					type="checkbox"
+					@change="todoUpdateData.isComplete = !todoUpdateData.isComplete"
+					@change.prevent="updateTodo"
+					:checked="todoUpdateData.isComplete"
+					class="checkbox checkbox-sm self-center"
+				/>
 
 				<!-- Delete -->
-				<button @click="deleteTodo(todoData.todoId)" class="w-fit h-fit min-h-0 btn btn-ghost p-0">
+				<button @click="deleteTodo" class="w-fit h-fit min-h-0 btn btn-ghost p-0">
 					<svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 						<path
 							fill="currentColor"
@@ -29,7 +35,14 @@
 <script setup lang="ts">
 const config = useRuntimeConfig();
 const jwtCookie = useCookie("jwt");
+
 const { todoData } = defineProps(["todoData"]);
+const todoUpdateData = ref({
+	todoId: todoData.todoId,
+	title: todoData.title,
+	description: todoData.description,
+	isComplete: todoData.isComplete,
+});
 
 const deleteTodoError = ref({
 	name: "",
@@ -38,12 +51,12 @@ const deleteTodoError = ref({
 });
 
 // Delete a todo
-const deleteTodo = async (todoIdParam: string) => {
+const deleteTodo = async () => {
 	try {
 		const response = await $fetch(`${config.public.apiUrl}/todo/delete`, {
 			method: "DELETE",
 			body: JSON.stringify({
-				todoId: todoIdParam,
+				todoId: todoData._id,
 			}),
 			headers: {
 				Authorization: `Bearer ${jwtCookie.value}`,
@@ -57,15 +70,15 @@ const deleteTodo = async (todoIdParam: string) => {
 };
 
 // Updating a todo
-const updateTodo = async (todoIdParam: string) => {
-	try {
-		const response = await $fetch(`${config.public.apiUrl}/todo/update`, {
-			method: "PATCH",
-			body: JSON.stringify({}),
-		});
-	} catch (err: any) {
-		//
-	}
+const updateTodo = async () => {
+	// try {
+	// 	const response = await $fetch(`${config.public.apiUrl}/todo/update`, {
+	// 		method: "PATCH",
+	// 		body: JSON.stringify(todoUpdateData.value),
+	// 	});
+	// } catch (err: any) {
+	// 	//
+	// }
 };
 </script>
 
