@@ -3,10 +3,10 @@
 		<div class="h-full flex p-3">
 			<div class="flex flex-col justify-center items-center gap-4">
 				<!-- Is Complete -->
-				<input type="checkbox" checked:any="checked" class="checkbox checkbox-sm self-center" />
+				<input type="checkbox" :checked="Boolean(todoData.isComplete)" class="checkbox checkbox-sm self-center" />
 
 				<!-- Delete -->
-				<button @click="deleteTodo(todoId)" class="w-fit h-fit min-h-0 btn btn-ghost p-0">
+				<button @click="deleteTodo(todoData.todoId)" class="w-fit h-fit min-h-0 btn btn-ghost p-0">
 					<svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
 						<path
 							fill="currentColor"
@@ -19,8 +19,8 @@
 			<div class="divider divider-horizontal"></div>
 
 			<div class="w-full">
-				<h2 class="text-base capitalize text-300">{{ title }}</h2>
-				<p class="text-xs text-gray-400 mt-1 font-light">{{ description }}</p>
+				<h2 class="text-base capitalize text-300">{{ todoData.title }}</h2>
+				<p class="text-xs text-gray-400 mt-1 font-light">{{ todoData.description }}</p>
 			</div>
 		</div>
 	</div>
@@ -29,7 +29,7 @@
 <script setup lang="ts">
 const config = useRuntimeConfig();
 const jwtCookie = useCookie("jwt");
-const { todoId, title, description } = defineProps(["todoId", "title", "description"]);
+const { todoData } = defineProps(["todoData"]);
 
 const deleteTodoError = ref({
 	name: "",
@@ -59,7 +59,10 @@ const deleteTodo = async (todoIdParam: string) => {
 // Updating a todo
 const updateTodo = async (todoIdParam: string) => {
 	try {
-		//
+		const response = await $fetch(`${config.public.apiUrl}/todo/update`, {
+			method: "PATCH",
+			body: JSON.stringify({}),
+		});
 	} catch (err: any) {
 		//
 	}
