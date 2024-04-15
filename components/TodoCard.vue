@@ -55,6 +55,15 @@ const deleteTodo = async (todoIdParam: string) => {
 		await refreshNuxtData();
 	}
 };
+
+// Updating a todo
+const updateTodo = async (todoIdParam: string) => {
+	try {
+		//
+	} catch (err: any) {
+		//
+	}
+};
 </script>
 
 <style scoped>

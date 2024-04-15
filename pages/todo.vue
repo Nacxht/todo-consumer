@@ -37,7 +37,7 @@
 				</div>
 
 				<!-- Submit Button & Logout Button -->
-				<button type="submit" :disabled="isSubmitDelay || todoListPending" class="btn btn-outline btn-primary w-full text-xs">
+				<button type="submit" :disabled="!canSubmit || isSubmitDelay || todoListPending" class="btn btn-outline btn-primary w-full text-xs">
 					<span v-if="todoListPending" class="invert"><img src="/svg/loading.svg" alt="" /></span>
 					<span v-else>Create a new todo</span>
 				</button>
@@ -119,11 +119,7 @@ const addTodoError = ref({
 });
 
 // Get todo data
-const {
-	data: todoList,
-	error: todoListError,
-	pending: todoListPending,
-} = await useFetch<TodoList>(`${config.public.apiUrl}/todo`, {
+const { data: todoList, pending: todoListPending } = await useFetch<TodoList>(`${config.public.apiUrl}/todo`, {
 	headers: {
 		Authorization: `Bearer ${jwtCookie.value}`,
 	},
