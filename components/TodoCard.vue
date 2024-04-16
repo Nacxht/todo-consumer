@@ -25,7 +25,7 @@
 			<div class="divider divider-horizontal"></div>
 
 			<div class="w-full">
-				<h2 class="text-base capitalize text-300">{{ todoData.title }}</h2>
+				<h2 class="text-base capitalize text-300" :class="{ 'line-through': todoUpdateData.isComplete }">{{ todoData.title }}</h2>
 				<p class="text-xs text-gray-400 mt-1 font-light">{{ todoData.description }}</p>
 			</div>
 		</div>
@@ -38,7 +38,7 @@ const jwtCookie = useCookie("jwt");
 
 const { todoData } = defineProps(["todoData"]);
 const todoUpdateData = ref({
-	todoId: todoData.todoId,
+	todoId: todoData._id,
 	title: todoData.title,
 	description: todoData.description,
 	isComplete: todoData.isComplete,
@@ -71,14 +71,17 @@ const deleteTodo = async () => {
 
 // Updating a todo
 const updateTodo = async () => {
-	// try {
-	// 	const response = await $fetch(`${config.public.apiUrl}/todo/update`, {
-	// 		method: "PATCH",
-	// 		body: JSON.stringify(todoUpdateData.value),
-	// 	});
-	// } catch (err: any) {
-	// 	//
-	// }
+	try {
+		const response = await $fetch(`${config.public.apiUrl}/todo/update`, {
+			method: "PATCH",
+			body: JSON.stringify(todoUpdateData.value),
+			headers: {
+				Authorization: `Bearer ${jwtCookie.value}`,
+			},
+		});
+	} catch (err: any) {
+		//
+	}
 };
 </script>
 
