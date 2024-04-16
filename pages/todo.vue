@@ -44,12 +44,13 @@
 				<div class="divider mb-2"></div>
 
 				<div class="w-full space-y-3">
-					<div class="text-center font-semibold text-sm">- Task Category -</div>
+					<div class="text-center font-semibold text-sm">- Task Categories -</div>
 					<div class="grid grid-cols-2 gap-3">
 						<button
 							@click="todoCategorySet(false)"
 							class="btn w-full"
 							:class="{ 'btn-neutral': !todoCategory, 'outline outline-1 outline-green-500': !todoCategory }"
+							:disabled="!todoCategory"
 						>
 							Incomplete
 						</button>
@@ -57,6 +58,7 @@
 							@click="todoCategorySet(true)"
 							class="btn w-full"
 							:class="{ 'btn-neutral': todoCategory, 'outline outline-1 outline-green-500': todoCategory }"
+							:disabled="todoCategory"
 						>
 							Complete
 						</button>
