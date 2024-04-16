@@ -1,5 +1,5 @@
 <template>
-	<div class="flex h-screen justify-center">
+	<div class="flex min-h-screen lg:h-screen lg:max-h-screen justify-center mb-1 lg:mb-0">
 		<div class="grid grid-cols-12 h-full w-[50rem] p-5 gap-5">
 			<!-- Todo Form & Handler -->
 			<div class="col-span-full lg:col-span-5 border border-gray-600 order-1 lg:order-2 h-fit rounded-lg p-4">
@@ -66,7 +66,7 @@
 
 			<!-- Todo Lists -->
 			<div
-				class="col-span-full lg:col-span-7 border border-gray-600 order-3 lg:order-1 rounded-lg overflow-y-auto mb-1 min-h-[25rem] lg:min-h-full max-h-[25rem] lg:max-h-full p-5 space-y-3"
+				class="col-span-full lg:col-span-7 border border-gray-600 order-3 lg:order-1 rounded-lg overflow-y-auto min-h-[25rem] lg:min-h-full max-h-[25rem] lg:max-h-full p-5 space-y-3"
 			>
 				<!-- Loading -->
 				<div v-if="todoListPending" class="flex-row">
