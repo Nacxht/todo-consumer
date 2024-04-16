@@ -1,8 +1,7 @@
 <template>
 	<dialog id="main_modal" class="modal">
 		<div class="modal-box shadow-none">
-			<h3 class="font-bold text-lg">Hello!</h3>
-			<p class="py-4">Press ESC key or click outside to close</p>
+			<h1 class="font-bold text-1xl text-center">Coming Soon (Kalau nda malas 🧢)</h1>
 		</div>
 
 		<form method="dialog" class="modal-backdrop">
