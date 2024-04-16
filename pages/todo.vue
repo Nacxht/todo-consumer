@@ -100,7 +100,7 @@
 		</div>
 
 		<!-- Modal (Coming soon, I'm still lazy to using modal) -->
-		<!-- <Modal /> -->
+		<Modal />
 	</div>
 </template>
 
