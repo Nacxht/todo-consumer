@@ -45,16 +45,16 @@
 
 				<div class="w-full space-y-3">
 					<div class="text-center font-semibold text-sm">- Task Category -</div>
-					<div class="columns-2">
+					<div class="grid grid-cols-2 gap-3">
 						<button
-							@click="todoCategory = false"
+							@click="todoCategorySet(false)"
 							class="btn w-full"
 							:class="{ 'btn-neutral': !todoCategory, 'outline outline-1 outline-green-500': !todoCategory }"
 						>
 							Incomplete
 						</button>
 						<button
-							@click="todoCategory = true"
+							@click="todoCategorySet(true)"
 							class="btn w-full"
 							:class="{ 'btn-neutral': todoCategory, 'outline outline-1 outline-green-500': todoCategory }"
 						>
@@ -94,7 +94,7 @@
 
 				<!-- Not Empty -->
 				<div v-else v-for="todo in todoList.data" class="flex-row">
-					<TodoCard :todoData="todo" />
+					<TodoCard :todoData="todo" :currentCategory="todoCategory" />
 				</div>
 			</div>
 		</div>
@@ -132,6 +132,11 @@ const logout = async () => {
 	return navigateTo("/login");
 };
 
+const todoCategorySet = async (isComplete: boolean) => {
+	todoCategory.value = isComplete;
+	await refreshNuxtData();
+};
+
 // "CreateTodo" error model
 const addTodoError = ref({
 	name: "",
@@ -140,9 +145,12 @@ const addTodoError = ref({
 });
 
 // Get todo data
-const { data: todoList, pending: todoListPending } = await useFetch<TodoList>(`${config.public.apiUrl}/todo`, {
+const { data: todoList, pending: todoListPending } = await useFetch<TodoList>(`${config.public.apiUrl}/todo/`, {
 	headers: {
 		Authorization: `Bearer ${jwtCookie.value}`,
+	},
+	params: {
+		isComplete: todoCategory,
 	},
 	onResponseError: async ({ response }) => {
 		if (response._data.error) {
