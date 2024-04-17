@@ -1,7 +1,7 @@
 <template>
 	<dialog id="main_modal" class="modal">
 		<div class="modal-box shadow-none">
-			<h1 class="font-bold text-1xl text-center">Coming Soon (Kalau nda malas 🧢)</h1>
+			<FormTodoUpdate v-show="content === 'formTodoUpdate'" :todo-id="identifier" />
 		</div>
 
 		<form method="dialog" class="modal-backdrop">
@@ -11,7 +11,10 @@
 </template>
 
 <script setup lang="ts">
-//
+const config = useRuntimeConfig();
+const jwtCookie = useCookie("jwt");
+
+let { content, identifier } = defineProps(["content", "identifier"]);
 </script>
 
 <style scoped>
