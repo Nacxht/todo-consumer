@@ -34,8 +34,8 @@
 					</div>
 
 					<!-- Submit Button & Logout Button -->
-					<button type="submit" :disabled="!canSubmit || isSubmitDelay || todoListPending" class="btn btn-outline btn-primary w-full text-xs">
-						<span v-if="todoListPending" class="invert"><img src="/svg/loading.svg" alt="" /></span>
+					<button type="submit" :disabled="!canSubmit || isSubmitDelay || addTodoPending" class="btn btn-outline btn-primary w-full text-xs">
+						<span v-if="addTodoPending" class="invert"><img src="/svg/loading.svg" alt="" /></span>
 						<span v-else>Create a new todo</span>
 					</button>
 					<button type="button" @click.prevent="logout" class="btn btn-outline btn-error w-full text-xs">Logout</button>
@@ -96,13 +96,13 @@
 
 				<!-- Not Empty -->
 				<div v-else v-for="todo in todoList.data" class="flex-row">
-					<TodoCard :todoData="todo" :currentCategory="todoCategory" />
+					<TodoCard @main-modal-emit="modalSetter" :todoData="todo" :currentCategory="todoCategory" />
 				</div>
 			</div>
 		</div>
 
 		<!-- Modal (Coming soon, I'm still lazy to using modal) -->
-		<Modal />
+		<Modal :content="modal.content" :identifier="modal.identifier" />
 	</div>
 </template>
 
@@ -119,41 +119,32 @@ useHead({
 
 const config = useRuntimeConfig();
 const jwtCookie = useCookie("jwt");
-const isSubmitDelay = ref(false);
-const todoCategory = ref(false); // True => Completed | False => Incomplete
 
-// "addTodo" data model
-const addTodoData = ref({
-	title: "",
-	description: "",
+// Input Validate
+const canSubmit = computed(() => {
+	return addTodoData.value.title.trim() && addTodoData.value.description.trim();
 });
 
-// Logout
-const logout = async () => {
+async function logout() {
 	jwtCookie.value = null;
 	return navigateTo("/login");
-};
+}
 
+const todoCategory = ref(false);
 const todoCategorySet = async (isComplete: boolean) => {
 	todoCategory.value = isComplete;
 	await refreshNuxtData();
 };
 
-// "CreateTodo" error model
-const addTodoError = ref({
-	name: "",
-	path: "",
-	message: "",
-});
-
 // Get todo data
-const { data: todoList, pending: todoListPending } = await useFetch<TodoList>(`${config.public.apiUrl}/todo/`, {
+const { data: todoList, pending: todoListPending } = await useLazyFetch<TodoList>(`${config.public.apiUrl}/todo/`, {
 	headers: {
 		Authorization: `Bearer ${jwtCookie.value}`,
 	},
 	params: {
 		isComplete: todoCategory,
 	},
+	key: "todoList",
 	onResponseError: async ({ response }) => {
 		if (response._data.error) {
 			const errName = response._data.error.name;
@@ -166,9 +157,13 @@ const { data: todoList, pending: todoListPending } = await useFetch<TodoList>(`$
 });
 
 // Create/add a new todo
-const addTodo = async () => {
+const addTodoPending = ref(false);
+const addTodoData = ref({ title: "", description: "" });
+const addTodoError = ref({ name: "", path: "", message: "" });
+async function addTodo() {
 	if (!canSubmit) return;
 	try {
+		addTodoPending.value = true;
 		const response = await $fetch(`${config.public.apiUrl}/todo/create`, {
 			method: "POST",
 			body: JSON.stringify(addTodoData.value),
@@ -188,10 +183,12 @@ const addTodo = async () => {
 		}
 	} finally {
 		await refreshNuxtData();
+		addTodoPending.value = false;
 	}
-};
+}
 
 // Delaying submit button
+const isSubmitDelay = ref(false);
 const submitDelayers = async () => {
 	isSubmitDelay.value = true;
 	setTimeout(() => {
@@ -199,10 +196,12 @@ const submitDelayers = async () => {
 	}, 700);
 };
 
-// Input Validate
-const canSubmit = computed(() => {
-	return addTodoData.value.title.trim() && addTodoData.value.description.trim();
-});
+// Modal
+const modal = ref({ content: "", identifier: "" });
+async function modalSetter(args: { content: string; identifier: string | number }) {
+	modal.value.content = args.content;
+	modal.value.identifier = String(args.identifier);
+}
 </script>
 
 <style scoped>
