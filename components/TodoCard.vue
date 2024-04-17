@@ -37,7 +37,11 @@
 
 				<!-- Edit -->
 				<div class="flex items-center">
-					<button onclick="main_modal.showModal()" class="w-fit h-fit min-h-0 btn btn-ghost p-0">
+					<button
+						@click="$emit('mainModalEmit', { content: 'formTodoUpdate', identifier: todoData._id })"
+						onclick="main_modal.showModal()"
+						class="w-fit h-fit min-h-0 btn btn-ghost p-0"
+					>
 						<svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
 							<path
 								fill="currentColor"
