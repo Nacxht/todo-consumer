@@ -38,7 +38,7 @@
 				<!-- Edit -->
 				<div class="flex items-center">
 					<button
-						@click="$emit('mainModalEmit', { content: 'formTodoUpdate', identifier: todoData._id })"
+						@click="$emit('todoUpdateModal', { content: 'formTodoUpdate', identifier: todoData._id })"
 						onclick="main_modal.showModal()"
 						class="w-fit h-fit min-h-0 btn btn-ghost p-0"
 					>
