@@ -96,13 +96,13 @@
 
 				<!-- Not Empty -->
 				<div v-else v-for="todo in todoList.data" class="flex-row">
-					<TodoCard @main-modal-emit="modalSetter" :todoData="todo" :currentCategory="todoCategory" />
+					<TodoCard @todo-update-modal="modalSetter" :todoData="todo" :currentCategory="todoCategory" />
 				</div>
 			</div>
 		</div>
 
 		<!-- Modal (Coming soon, I'm still lazy to using modal) -->
-		<Modal :content="modal.content" :identifier="modal.identifier" />
+		<Modal :content="modal.content" />
 	</div>
 </template>
 
@@ -198,10 +198,13 @@ const submitDelayers = async () => {
 
 // Modal
 const modal = ref({ content: "", identifier: "" });
+const todoUpdateId = ref("");
 async function modalSetter(args: { content: string; identifier: string | number }) {
 	modal.value.content = args.content;
 	modal.value.identifier = String(args.identifier);
+	todoUpdateId.value = String(args.identifier);
 }
+provide("todoUpdateId", todoUpdateId);
 </script>
 
 <style scoped>
